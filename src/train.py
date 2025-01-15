@@ -23,8 +23,9 @@ def train_data():
     
     raw_data = [pd.read_csv(file, header=None, engine="python") for file in input_files]
     data = pd.concat(raw_data)
+    
 
-    print(f"Training data shape: {train_data.shape}")
+    print(f"Training data shape =============: {data.shape}")
 
      # Set MLflow tracking URI (if needed)
     tracking_uri = os.environ.get('MLFLOW_TRACKING_URI')
