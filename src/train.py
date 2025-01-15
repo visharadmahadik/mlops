@@ -19,12 +19,15 @@ def train(train_data, max_depth=6):
         xgboost.XGBClassifier: Trained model.
     """
     # Separate features and target
-    train_X = train_data.iloc[:, :-1]
-    train_y = train_data.iloc[:, -1]
+    # Step 2: Split the data into features (X) and target (y)
+    X = train_data.drop(columns=['target'])  # Assuming 'target' is the name of the target column
+    y = train_data['target']
 
-    # Train XGBoost classifier
-    model = xgb.XGBClassifier(max_depth=max_depth, use_label_encoder=False, eval_metric='logloss')
-    model.fit(train_X, train_y)
+    # Step 3: Split the data into training and testing sets
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+    model = xgb.XGBClassifier(use_label_encoder=False, eval_metric='logloss')
+    model.fit(X_train, y_train)
 
     return model
 
@@ -74,7 +77,7 @@ def main():
         print(f"Model saved at {model_path}")
 
         # Register the model with MLflow
-        artifact_path = "xgboost_model"
+        artifact_path = "iris-xgboost_model"
         mlflow.xgboost.log_model(model, artifact_path=artifact_path)
 
         print(f"Model logged to MLflow under artifact path: {artifact_path}")

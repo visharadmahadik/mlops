@@ -120,7 +120,7 @@ def create_sagemaker_pipeline(
 
     # Create pipeline
     pipeline = Pipeline(
-        name='iris-mlflow-pipeline',
+        name='iris-xgb-pipeline',
         steps=[processing_step, training_step],
         sagemaker_session=pipeline_session
     )
