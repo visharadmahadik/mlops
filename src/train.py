@@ -1,48 +1,83 @@
-import mlflow.xgboost
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score
-import xgboost as xgb
+import argparse
+import os
+import joblib
 import pandas as pd
 import mlflow
-from sklearn.datasets import load_digits  # Replace with your dataset
+import xgboost as xgb
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
 
-# Step 1: Load data (replace with your new dataset)
-data = load_digits()  # Example using load_digits
-X = pd.DataFrame(data.data, columns=[f"feature_{i}" for i in range(data.data.shape[1])])
-y = data.target
+def train(train_data, max_depth=6):
+    """
+    Train an XGBoost classifier.
 
-# Split the data
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+    Args:
+        train_data (pd.DataFrame): Training data with last column as target.
+        max_depth (int, optional): Maximum depth of the tree. Defaults to 6.
 
-# Step 2: Train XGBoost model
-model = xgb.XGBClassifier(use_label_encoder=False, eval_metric='logloss')
-model.fit(X_train, y_train)
+    Returns:
+        xgboost.XGBClassifier: Trained model.
+    """
+    # Separate features and target
+    train_X = train_data.iloc[:, :-1]
+    train_y = train_data.iloc[:, -1]
 
-tracking_uri = 'arn:aws:sagemaker:us-east-1:750573229682:mlflow-tracking-server/mlflow-tracking-server-sagemaker-poc'
-mlflow.set_tracking_uri(tracking_uri) 
+    # Train XGBoost classifier
+    model = xgb.XGBClassifier(max_depth=max_depth, use_label_encoder=False, eval_metric='logloss')
+    model.fit(train_X, train_y)
 
-# Step 3: Log model in MLflow
-mlflow.set_experiment("xgboost_digits_experiment")  # Change experiment name
-with mlflow.start_run() as run:
-    # Log model
-    mlflow.xgboost.log_model(model, artifact_path="xgboost_model")
-    print(f"Model logged in MLflow with run ID: {mlflow.active_run().info.run_id}")
-    run_id = run.info.run_id
+    return model
 
-# Step 4: Load model from MLflow
-model_uri = f"runs:/{run_id}/xgboost_model"
-loaded_model = mlflow.xgboost.load_model(model_uri)
+def main():
+    # Parse arguments
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--max_depth', type=int, default=6)
+    parser.add_argument('--output-data-dir', type=str, default=os.environ.get('SM_OUTPUT_DATA_DIR', '/opt/ml/output'))
+    parser.add_argument('--model-dir', type=str, default=os.environ.get('SM_MODEL_DIR', '/opt/ml/processing/output')) 
+    parser.add_argument('--train', type=str, default=os.environ.get('SM_CHANNEL_TRAIN', '/opt/ml/processing/input/train')) 
 
-# Step 5: Predict on multiple samples one by one
-samples = X_test.iloc[:5]  # Select first 5 samples from the test set
+    args = parser.parse_args()
 
-print("Predictions:")
-for i, sample in samples.iterrows():
-    sample = sample.values.reshape(1, -1)
-    prediction = loaded_model.predict(sample)
-    print(f"Sample {i}: Predicted class = {prediction[0]}")
+    # Read input files 
+    input_files = [
+        os.path.join(args.train, file) 
+        for file in os.listdir(args.train) 
+        if os.path.isfile(os.path.join(args.train, file))
+    ]
 
-# Evaluate model accuracy
-y_pred = loaded_model.predict(X_test)
-accuracy = accuracy_score(y_test, y_pred)
-print(f"Model accuracy on test set: {accuracy}")
+    print(f"Input files: {input_files}") 
+
+    if not input_files:
+        raise ValueError('No input files found in the training directory')
+
+    # Read and concatenate data
+    raw_data = [pd.read_csv(file, header=None, engine="python") for file in input_files]
+    train_data = pd.concat(raw_data)
+
+    print(f"Training data shape: {train_data.shape}")
+
+    # Set MLflow tracking URI
+    tracking_uri = os.environ.get('MLFLOW_TRACKING_URI', 'arn:aws:sagemaker:us-east-1:750573229682:mlflow-tracking-server/mlflow-tracking-server-sagemaker-poc')
+    mlflow.set_tracking_uri(tracking_uri) 
+
+    # Enable MLflow autologging
+    mlflow.xgboost.autolog() 
+    print("Autologging enabled") 
+
+    # Train the model
+    with mlflow.start_run():
+        model = train(train_data, args.max_depth)
+
+        # Save the model
+        model_path = os.path.join(args.model_dir, "model.joblib")
+        joblib.dump(model, model_path)
+        print(f"Model saved at {model_path}")
+
+        # Register the model with MLflow
+        artifact_path = "xgboost_model"
+        mlflow.xgboost.log_model(model, artifact_path=artifact_path)
+
+        print(f"Model logged to MLflow under artifact path: {artifact_path}")
+
+if __name__ == '__main__':
+    main()
