@@ -89,7 +89,6 @@ def main():
         model_artifacts_uri,
         deploy_output_uri
     )
-
     # Upsert pipeline
     deployment_pipeline.upsert(role_arn=role)
 
