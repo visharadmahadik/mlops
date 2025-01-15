@@ -86,7 +86,7 @@ def create_sagemaker_pipeline(
 
      # Create pipeline
     pipeline = Pipeline(
-        name='iris-mlflow-pipeline',
+        name='xgb-iris-mlflow-pipeline',
         steps=[processing_step, training_step],
         sagemaker_session=pipeline_session
     )
@@ -100,7 +100,7 @@ def main():
     role = 'arn:aws:iam::750573229682:role/service-role/AmazonSageMaker-ExecutionRole-20241211T150457'
 
     # S3 URIs for input and output data
-    input_data_uri = "s3://mlflow-sagemaker-us-east-1-750573229682/iris-dataset/"
+    input_data_uri = "s3://mlflow-sagemaker-us-east-1-750573229682/iris-dataset/iris_xgb/"
     output_data_uri = "s3://mlflow-sagemaker-us-east-1-750573229682/iris-output/"
     model_output_uri = "s3://mlflow-sagemaker-us-east-1-750573229682/iris-model-output/"
     deploy_output_uri = "s3://mlflow-sagemaker-us-east-1-750573229682/iris-deploy-output/"

@@ -35,8 +35,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 750573229682.dkr.ecr.us-east-1.amazonaws.com
-          docker build -t sagemaker-xgb .
-          docker tag sagemaker-xgb:latest 750573229682.dkr.ecr.us-east-1.amazonaws.com/sagemaker-xgb:latest
-          docker push 750573229682.dkr.ecr.us-east-1.amazonaws.com/sagemaker-xgb:latest
+          # aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 750573229682.dkr.ecr.us-east-1.amazonaws.com
+          # docker build -t sagemaker-xgb .
+          # docker tag sagemaker-xgb:latest 750573229682.dkr.ecr.us-east-1.amazonaws.com/sagemaker-xgb:latest
+          # docker push 750573229682.dkr.ecr.us-east-1.amazonaws.com/sagemaker-xgb:latest
           python pipeline.py
