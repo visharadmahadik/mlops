@@ -22,7 +22,7 @@ if __name__ == "__main__":
         raise ValueError("No input files found in the input directory")
     
     # input_file_path = os.path.join(input_path, input_files[0])
-    input_file_path = os.path.join(input_path, 'iris.csv') 
+    input_file_path = os.path.join(input_path, 'iris_data.csv') 
     output_file_path = os.path.join(output_path, "preprocessed_iris.csv") 
     
 
