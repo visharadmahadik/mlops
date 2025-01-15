@@ -1,12 +1,12 @@
 name: Classification Pipeline
 
-# on:
-#   push:
-#     branches:
-#       - main  # Trigger this workflow on push to the `main` branch (fixed branch name)
-#   pull_request:
-#     branches:
-#       - main  # Trigger on pull requests targeting `main` branch (fixed branch name)
+on:
+  push:
+    branches:
+      - test  # Trigger this workflow on push to the `main` branch (fixed branch name)
+  pull_request:
+    branches:
+      - test  # Trigger on pull requests targeting `main` branch (fixed branch name)
 
 jobs:
   rr_train:
@@ -40,3 +40,4 @@ jobs:
           docker tag sagemaker-xgb:latest 750573229682.dkr.ecr.us-east-1.amazonaws.com/sagemaker-xgb:latest
           docker push 750573229682.dkr.ecr.us-east-1.amazonaws.com/sagemaker-xgb:latest
           ls
+          python pipeline.py
