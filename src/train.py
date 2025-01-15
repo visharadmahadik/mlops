@@ -25,7 +25,7 @@ def train_data():
     data = pd.concat(raw_data)
     
 
-    print(f"Training data shape =============: {data.shape}")
+    print(f"Training data hape =============: {data}")
 
      # Set MLflow tracking URI (if needed)
     tracking_uri = os.environ.get('MLFLOW_TRACKING_URI')
@@ -36,8 +36,9 @@ def train_data():
         tracking_uri = 'arn:aws:sagemaker:us-east-1:750573229682:mlflow-tracking-server/mlflow-tracking-server-sagemaker-poc'
 
     mlflow.set_tracking_uri(tracking_uri)
-
-    X = data.drop(columns=['target'])  # Assuming 'target' is the name of the target column
+    data.head()
+    print(f"Training data hape =============: {data}")
+    X = data.drop(columns=['target'], axis = 1)  # Assuming 'target' is the name of the target column
     y = data['target']
 
     # Split the data
