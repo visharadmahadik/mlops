@@ -40,4 +40,5 @@ jobs:
           # docker tag sagemaker-xgb:latest 750573229682.dkr.ecr.us-east-1.amazonaws.com/sagemaker-xgb:latest
           # docker push 750573229682.dkr.ecr.us-east-1.amazonaws.com/sagemaker-xgb:latest
           ls
-          python pipeline.py
+          #python pipeline.py
+          python deploy_pipeline.py
