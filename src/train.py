@@ -21,11 +21,12 @@ def train_data():
     if not input_files:
         raise ValueError('No input files found in the training directory')
     
-    raw_data = [pd.read_csv(file, header=None, engine="python") for file in input_files]
+    raw_data = [pd.read_csv(file, header= 0, engine="python") for file in input_files]
     data = pd.concat(raw_data)
     
 
-    print(f"Training data hape =============: {data}")
+    print(f"Training data hape =============: {data[:-1]}")
+    print(f"Training data columns =============: {data.columns}")
 
      # Set MLflow tracking URI (if needed)
     tracking_uri = os.environ.get('MLFLOW_TRACKING_URI')
@@ -38,8 +39,8 @@ def train_data():
     mlflow.set_tracking_uri(tracking_uri)
     data.head()
     print(f"Training data hape =============: {data}")
-    X = data.drop(columns=['target'], axis = 1)  # Assuming 'target' is the name of the target column
-    y = data['target']
+    X = data.drop(columns=["target"], axis = 1)  # Assuming 'target' is the name of the target column
+    y = data["target"]
 
     # Split the data
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
@@ -49,7 +50,7 @@ def train_data():
     model.fit(X_train, y_train)
     
     # Step 3: Log model in MLflow
-    mlflow.set_experiment("xgboost_iris_experiment")
+    mlflow.set_experiment("xgb_classification_iris_experiment")
     with mlflow.start_run() as run:
         # Log model
         mlflow.xgboost.log_model(model, artifact_path="xgboost_model")
