@@ -1,7 +1,15 @@
-name: classification Pipeline
+name: Classification Pipeline
+
+on:
+  push:
+    branches:
+      - main  # Trigger this workflow on push to the `main` branch (fixed branch name)
+  pull_request:
+    branches:
+      - main  # Trigger on pull requests targeting `main` branch (fixed branch name)
 
 jobs:
-   rr_train:
+  rr_train:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -18,4 +26,18 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-west-2  # Replace with your AWS region
+          aws-region: us-east-1
+
+      - name: Install requirements
+        run: pip3 install -r requirements.txt
+
+      - name: Fire SageMaker
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 750573229682.dkr.ecr.us-east-1.amazonaws.com
+          docker build -t sagemaker-xgb .
+          docker tag sagemaker-xgb:latest 750573229682.dkr.ecr.us-east-1.amazonaws.com/sagemaker-xgb:latest
+          docker push 750573229682.dkr.ecr.us-east-1.amazonaws.com/sagemaker-xgb:latest
+          ls
+          pip freeze
