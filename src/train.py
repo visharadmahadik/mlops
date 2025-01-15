@@ -20,6 +20,8 @@ def train(train_data, max_depth=6):
     """
     # Separate features and target
     # Step 2: Split the data into features (X) and target (y)
+    print(train_data)
+    
     X = train_data.drop(columns=['target'])  # Assuming 'target' is the name of the target column
     y = train_data['target']
 
