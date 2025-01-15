@@ -64,10 +64,7 @@ def main():
     # Set MLflow tracking URI
     tracking_uri = os.environ.get('MLFLOW_TRACKING_URI', 'arn:aws:sagemaker:us-east-1:750573229682:mlflow-tracking-server/mlflow-tracking-server-sagemaker-poc')
     mlflow.set_tracking_uri(tracking_uri) 
-
-    # Enable MLflow autologging
-    mlflow.xgboost.autolog() 
-    print("Autologging enabled") 
+    mlflow.set_experiment("xgb_sg")
 
     # Train the model
     with mlflow.start_run():
