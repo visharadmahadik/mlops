@@ -89,3 +89,7 @@ Environment Execution: Once inside the container,
 2025-01-16T10:01:09.658Z
   File "/opt/ml/processing/input/code/preprocessing.py", line 15
     print("Current working directory of preprocessing :", os.getcwd()))
+
+ File "/opt/ml/processing/input/code/train.py", line 87
+    main()
+    ^
