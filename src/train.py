@@ -83,6 +83,6 @@ def main():
 
 if __name__ == '__main__':
     print("Current working directory of train :", os.getcwd())
-    print("Contents of the current directory:", os.listdir(os.getcwd()))
+    print("Contents of the current directory:", os.listdir(os.getcwd())
     main()
     

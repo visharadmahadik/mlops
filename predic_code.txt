@@ -80,3 +80,12 @@ Script Transfer: The code='src/preprocessing.py' parameter tells SageMaker where
 Environment Execution: Once inside the container, 
                        the script is executed as specified in the command (e.g., python3 src/preprocessing.py),
                        and the data is processed.
+
+
+
+
+
+
+2025-01-16T10:01:09.658Z
+  File "/opt/ml/processing/input/code/preprocessing.py", line 15
+    print("Current working directory of preprocessing :", os.getcwd()))
