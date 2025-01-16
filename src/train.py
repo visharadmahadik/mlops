@@ -82,4 +82,6 @@ def main():
         print(f"Model logged to MLflow under artifact path: {artifact_path}")
 
 if __name__ == '__main__':
+    print("Current working directory of train :", os.getcwd())
     main()
+    

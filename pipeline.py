@@ -4,6 +4,9 @@ from sagemaker.workflow.steps import ProcessingStep
 from sagemaker.processing import ProcessingInput, ProcessingOutput
 from sagemaker.workflow.pipeline_context import PipelineSession
 from sagemaker.processing import ScriptProcessor
+import os 
+
+print("Current working directory of pipeline.py :", os.getcwd())
 
 
 def create_sagemaker_pipeline(

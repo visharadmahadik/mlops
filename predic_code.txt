@@ -70,3 +70,13 @@ response = predictor.predict(sklearn_input_list)
 logging.debug("Prediction response: %s", response)
 
 response
+
+
+https://sagemaker.readthedocs.io/en/stable/amazon_sagemaker_processing.html
+Script Location: The script (src/preprocessing.py) is not in the container,
+                 but SageMaker automatically ensures it's available inside the container at runtime.
+Script Transfer: The code='src/preprocessing.py' parameter tells SageMaker where the script is located. 
+                 When the processing job starts, SageMaker copies it to the container.
+Environment Execution: Once inside the container, 
+                       the script is executed as specified in the command (e.g., python3 src/preprocessing.py),
+                       and the data is processed.

@@ -12,7 +12,8 @@ if __name__ == "__main__":
     # Input and output paths from SageMaker Processing
     input_path = "/opt/ml/processing/input"
     output_path = "/opt/ml/processing/output"
-    
+    print("Current working directory of preprocessing :", os.getcwd())
+
     # Ensure output directory exists
     os.makedirs(output_path, exist_ok=True)
 
